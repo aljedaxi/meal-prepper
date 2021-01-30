@@ -58,6 +58,16 @@ const spuditizer = pipe([
 	s => `https://www.spud.ca/catalogue/catalogue.cfm?search=${s}`,
 ]);
 
+const apothitizer = pipe([
+	s => s.replace(/ /g, '+'),
+	s => `https://www.the-apothecary.ca/search.asp?keyword=${s}&search=Search`,
+]);
+
+const searchers = [
+	{searcher: spuditizer, website: 'spud'},
+	{searcher: apothitizer, website: 'apothecary'},
+];
+
 const searcher = {searcher: spuditizer, website: 'spud'};
 
 const IngredientsList = props => {
@@ -77,12 +87,12 @@ const IngredientsList = props => {
 	]) (allThings);
 	const accountedForProps = map (toAccountForProps (handleUnselect)) (selecteds);
 
-	const handleLink = _ => {
+	const handleLink = searcher => {
 		const selectionText = window.getSelection().toString();
 		if (!selectionText) return;
 		window.open(
-			searcher.searcher (selectionText),
-			'_blank'
+			searcher (selectionText),
+			'tab'
 		);
 	};
 
@@ -90,9 +100,11 @@ const IngredientsList = props => {
 		<div>
 			<h2>Ingredients:</h2>
 			<div>
-				<button onClick={handleLink}>
-					search {searcher.website} for selected text
-				</button>
+				{searchers.map(({website, searcher}) => (
+					<button onClick={_ => handleLink(searcher)}>
+						search {website} for selected text
+					</button>
+				))}
 			</div>
 			<h3>unaccounted 4:</h3>
 			<ul>
