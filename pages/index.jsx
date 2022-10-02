@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import sanctuary from 'sanctuary';
 import {env as flutureEnv} from 'fluture-sanctuary-types';
 import {
@@ -6,7 +5,7 @@ import {
 	createElement as kare,
 	Fragment,
 } from 'react';
-import {resolve, fork, Future, encaseP} from 'fluture'
+import {fork, encaseP} from 'fluture'
 const {
 	fromMaybe,
 	chain,
@@ -21,27 +20,27 @@ const {
 	either,
 	map,
 } = sanctuary.create ({checkTypes: true, env: sanctuary.env.concat (flutureEnv)})
-import {getUrls} from "./trello";
+import {getUrls} from "../util/trello";
 const createElement = e => p => kare(e,p);
 const setter = s => e => s(e.target.value);
 
-const ifGood = handleClick => s => ({ 
+const ifGood = handleClick => s => ({
 	children: (
 		<Fragment>
 			<input aria-label={s} type="checkbox" value={false} onClick={_ => handleClick(s)} />
 			{s}
 		</Fragment>
 	),
-	key: s, 
+	key: s,
 });
-const ifBad = handleClick => url => ({ 
+const ifBad = handleClick => url => ({
 	children: (
 		<Fragment>
 			<input aria-label={url} type="checkbox" value={false} onClick={_ => handleClick(url)} />
 			we couldn't get ingredients for <a href={url}>{url}</a>. please get them manually.
 		</Fragment>
 	),
-	key: url 
+	key: url
 });
 
 const toAccountForProps = handleUnselect => s => ({
@@ -67,8 +66,6 @@ const searchers = [
 	{searcher: spuditizer, website: 'spud'},
 	{searcher: apothitizer, website: 'apothecary'},
 ];
-
-const searcher = {searcher: spuditizer, website: 'spud'};
 
 const IngredientsList = props => {
   const {ingredients, failedUrls} = props;
@@ -124,13 +121,12 @@ const parseIngredients = colName => pipe([
   fromMaybe ([]),
 ])
 
-const getIngredientsFromUrls = encaseP(a => 
+const getIngredientsFromUrls = encaseP(a =>
 	fetch('/api/ingredients', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(a)})
 		.then(r => r.json())
 );
 
 const getFileText = encaseP(e => e.target.files[0].text());
-const trace = s => {console.log(s); return s;};
 const Uploader = props => {
 	const {onSubmit, show} = props;
 	if (!show) return null;

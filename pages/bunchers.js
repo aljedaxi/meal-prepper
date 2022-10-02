@@ -4,12 +4,7 @@ const {
 	head,
 	fromMaybe,
 	equals,
-	fst,
-	concat,
-	Pair,
-	snd,
 	filter,
-	zip,
 	words,
 	compose,
 	isJust,
@@ -18,7 +13,6 @@ const {
 	splitOn,
 	elem,
 	parseFloat,
-	reduce,
 	show,
 } = require ('sanctuary');
 
@@ -55,15 +49,15 @@ const canParseFloat = compose (isJust) (parseFloat);
 const removeFluff = s => s.split(',')[0];
 const rejectIfAny = fs => reject(a => fs.some(f => f(a)));
 const containsAnyOfTheFollowingCharacters = cs => pipe([
-	splitOn (''), 
+	splitOn (''),
 	a => cs.some(c => elem (c) (a))
 ]);
 const getNouns = pipe([
 	removeFluff,
 	words,
 	rejectIfAny ([
-		elemOf (units), 
-		canParseFloat, 
+		elemOf (units),
+		canParseFloat,
 		containsAnyOfTheFollowingCharacters (['/', '(', ')']),
 	]),
 ]);
@@ -89,7 +83,7 @@ const anyIntersect = x => y => x.some (xs => elem (xs) (y)) || y.some (ys => ele
 // 	}, [])
 // ]);
 
-const nouns = pipe([ 
+const nouns = pipe([
 	getNouns,
 	head,
 	map (toLower),

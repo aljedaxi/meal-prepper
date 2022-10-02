@@ -18,8 +18,6 @@ const getListId = listToGetRecipesFrom => pipe([
 	fromMaybe (''),
 ]);
 
-const prop = p => o => o[p];
-const trace = s => {console.log(s); return s;};
 const getUrls = listNames => o => {
 	const listIds = map (l => getListId (l) (o)) (listNames)
 	return pipe([
